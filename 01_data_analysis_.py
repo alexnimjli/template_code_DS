@@ -84,7 +84,69 @@ X_test = test_df
 X_train.head()
 
 
-# # function that plots box plot 
+# # box plots to check for outliers
+
+def box_plots(df, attribute_list):
+    new_df = pd.DataFrame()
+    for i in attribute_list:
+        new_df[i] = df[i]
+            
+    new_df.boxplot(return_type='dict')
+    plt.plot
+    return 
+
+
+# +
+attribute_list = ['DISBURSED_AMOUNT', 'ASSET_COST', "LTV"]
+
+box_plots(X_train, attribute_list)
+# -
+
+box_plots(X_train, ["LTV"])
+
+X_train['LTV'].describe()
+
+# +
+attribute_list = ['Runtime (Minutes)']
+
+box_plots(IMDB_df, attribute_list)
+
+
+# -
+
+def box_plot_outliers(df, attribute, max_val, min_val):
+    attribute_column = df[attribute]
+    outliers_max = (attribute_column > max_val)
+    print(df[outliers_max])
+    outliers_min = (attribute_column < min_val)
+    print(df[outliers_min])
+    return df[outliers_min]
+
+
+
+box_plot_outliers(X_train, "LTV", 100, 45)
+
+IMDB_df.columns
+
+# # DBSCAN to remove outliers
+
+from sklearn.cluster import DBSCAN
+from collections import Counter
+
+# +
+df = IMDB_df
+df = df.drop('Title', axis=1)
+df = df.drop('Genre', axis=1)
+df = df.drop('Description', axis=1)
+df = df.drop('Director', axis=1)
+df = df.drop('Actors', axis=1)
+
+model = DBSCAN(eps=0.8, min_samples=19).fit(df)
+
+
+# -
+
+# # function that plots bar graphs 
 
 def plot_bar_graphs(df, attribute):
     plt.figure(1)
