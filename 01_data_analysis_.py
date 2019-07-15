@@ -108,37 +108,53 @@ lime_green = '#32CD32'
 red_wine = '#722f37'
 white_wine = '#dbdd46' 
 
-def plot_histograms(df, attribute, n_bins, x_max):
+def plot_histograms(df, x_attribute, n_bins, x_max):
     
-    #this removes the nan values for this attribute  
-    df = df.dropna(subset=[attribute]) 
+    #this removes the rows with nan values for this attribute  
+    df = df.dropna(subset=[x_attribute]) 
     
-    print ("Mean: {:0.2f}".format(df[attribute].mean()))
-    print ("Median: {:0.2f}".format(df[attribute].median()))
+    print ("Mean: {:0.2f}".format(df[x_attribute].mean()))
+    print ("Median: {:0.2f}".format(df[x_attribute].median()))
            
-    df[attribute].hist(bins= n_bins, color= crimson)
+    df[x_attribute].hist(bins= n_bins, color= crimson)
     
     #this plots the mean and median 
-    plt.plot([df[attribute].mean(), df[attribute].mean()], [0, 50000],
+    plt.plot([df[x_attribute].mean(), df[x_attribute].mean()], [0, 60000],
         color='black', linestyle='-', linewidth=2, label='mean')
-    plt.plot([df[attribute].median(), df[attribute].median()], [0, 50000],
+    plt.plot([df[x_attribute].median(), df[x_attribute].median()], [0, 60000],
         color='black', linestyle='--', linewidth=2, label='median')
     
     plt.xlim(xmin=0, xmax = x_max)
-    plt.xlabel(attribute)
+    plt.xlabel(x_attribute)
     plt.ylabel('COUNT')
-    plt.title(attribute)
+    plt.title(x_attribute)
     plt.legend(loc='best')
     plt.show()
-    
-    df[df['LOAN_DEFAULT']==0][attribute].hist(bins=n_bins, color = crimson, label='No default')
 
-    df[df['LOAN_DEFAULT']==1][attribute].hist(bins=n_bins, color = lime_green, label='Default')
+    df[df['LOAN_DEFAULT']==0][x_attribute].hist(bins=n_bins, color = crimson, label='No default')
+
+    print ("Y Mean: {:0.2f}".format(df[df['LOAN_DEFAULT']==0][x_attribute].mean()))
+    print ("Y Median: {:0.2f}".format(df[df['LOAN_DEFAULT']==0][x_attribute].median()))
+    
+    plt.plot([df[df['LOAN_DEFAULT']==0][x_attribute].mean(), df[df['LOAN_DEFAULT']==0][x_attribute].mean()], 
+            [0, 60000], color='r', linestyle='-', linewidth=2, label='Y mean') 
+    plt.plot([df[df['LOAN_DEFAULT']==1][x_attribute].mean(), df[df['LOAN_DEFAULT']==1][x_attribute].mean()], 
+            [0, 60000], color='b', linestyle='-', linewidth=2, label='N mean')
+ 
+    df[df['LOAN_DEFAULT']==1][x_attribute].hist(bins=n_bins, color = lime_green, label='Default')
+    
+    print ("N Mean: {:0.2f}".format(df[df['LOAN_DEFAULT']==1][x_attribute].mean()))
+    print ("N Median: {:0.2f}".format(df[df['LOAN_DEFAULT']==1][x_attribute].median()))
+    
+    plt.plot([df[df['LOAN_DEFAULT']==0][x_attribute].median(), df[df['LOAN_DEFAULT']==0][x_attribute].median()], 
+            [0, 60000], color='r', linestyle='--', linewidth=2, label='Y median') 
+    plt.plot([df[df['LOAN_DEFAULT']==1][x_attribute].median(), df[df['LOAN_DEFAULT']==1][x_attribute].median()], 
+            [0, 60000], color='b', linestyle='--', linewidth=2, label='N median')
     
     plt.xlim(xmin=0, xmax = x_max)
     
-    plt.title(attribute)
-    plt.xlabel(attribute)
+    plt.title(x_attribute)
+    plt.xlabel(x_attribute)
     plt.ylabel('COUNT')
     plt.legend(loc='best')
     plt.show()    
