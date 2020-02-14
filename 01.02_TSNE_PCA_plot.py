@@ -33,6 +33,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from matplotlib.pyplot import figure
+
 figure(num=None, figsize=(15, 8), dpi=80, facecolor='w', edgecolor='k')
 
 tsne = TSNE(n_components=2, random_state=0)
