@@ -69,6 +69,8 @@ def confusion_matrices(y, y_pred):
     return
 
 
+# ### for classification
+
 # +
 GaussianNB = GaussianNB()
 SGDClassifier = SGDClassifier()
@@ -99,6 +101,52 @@ for model, name in zip(models, names):
     print("\n")
     scores_df.loc[name] = temp_list
     
+# -
+
+# ### for regression
+
+# +
+import time
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
+
+lin_reg = LinearRegression()
+dec_tree_reg = DecisionTreeRegressor()
+simple_vec_reg = SVR(kernel='rbf', gamma='auto')
+forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
+
+scores_df = pd.DataFrame(columns = ['average_MAE', 'average_RMSE', 'test_RMSE', 'fit_time'])
+
+models = [lin_reg, dec_tree_reg, simple_vec_reg, forest_reg]
+names = ["Linear Regression", "Decision Tree Regressor", "Simple Vector Regressor",'Random Forest Regressor']
+
+for model, name in zip(models, names):
+    temp_list = []
+    print(name)
+    
+    t0 = time.time()
+    model.fit(X_train, y_train)
+    scores = cross_validate(model, X_train, y_train,
+                            scoring=('neg_mean_absolute_error', 'neg_root_mean_squared_error'), cv=5)
+
+    for score in ['neg_mean_absolute_error', 'neg_root_mean_squared_error']:
+        mean_score = -scores['test_'+score].mean()
+        print('CV {} mean : {}'.format(score, mean_score))
+        temp_list.append(mean_score)
+
+    test_predict = model.predict(tv_test_features)
+    test_MSE = mean_squared_error(test_scores, test_predict)
+    test_RMSE = np.sqrt(test_MSE)
+    temp_list.append(test_RMSE)
+    print('test RMSE: {}'.format(test_RMSE))
+    
+    t1 = time.time()
+    temp_list.append(t1-t0)
+    print('runtime: {} \n'.format(t1-t0))
+    scores_df.loc[name] = temp_list
+
 # -
 
 scores_df
